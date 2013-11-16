@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ArduIDE v0.1.0a - &copy; 2013 Nicolas FRADIN</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="libs/editor/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="libs/editor/theme/arduide.css">
+
+  </head>
+  <body>
+    <div class="splash-screen"></div>
+    <div class="application">
+      <div class="toolbar">
+        <a href="#" class="toolbar-btn btn-default open-file">Open</a>
+        <a href="#" class="toolbar-btn btn-default"></a>
+        <a href="#" class="toolbar-btn btn-default"></a>
+      </div>
+      <div class="layout">
+        <div class="layout-panel layout-west">West</div>
+        <div class="layout-separator"><div class="layout-slider"></div></div>
+        <div class="layout-panel layout-center">
+          <div class="tabs">
+            <div class="wrapper">
+              <!-- <div class="tab selected">main.js<span class="tab-close">x</span></div>
+              <div class="tab">ConfigFile.js<span class="tab-close">x</span></div>
+              <div class="tab">SockeCloseHandlerEvent.js<span class="tab-close">x</span></div>
+              <div class="tab">package.json<span class="tab-close">x</span></div> -->
+            </div>
+          </div>
+          <div class="editors">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- -->
+    <input type="file" id="openFile" style="display: none">
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="libs/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="libs/mousetrap.min.js"></script>
+    <script type="text/javascript" src="libs/require.js" data-main="js/main"></script>
+    <script type="text/javascript" src="libs/editor/codemirror.js"></script>
+    <script type="text/javascript" src="libs/editor/mode/arduino/arduino.js"></script>
+    <script type="text/javascript" src="libs/editor/mode/javascript/javascript.js"></script>
+  </body>
+</html>
