@@ -18,10 +18,29 @@ define([], function() {
     this.fileContextMenu = null;
     this.projectContextMenu = null;
 
+    this._excludedFiles = [
+      /^\.DS_Store$/,
+      /^\.git$/
+    ];
+
     this.initContextMenus();
     this.initFileTreeEvents();
   };
 
+  FilesTree.prototype._isFileAuthorized = function(fileName) {
+    var authorized = true;
+    this._excludedFiles.forEach(function(regex) {
+      if(regex.test(fileName)) {
+        authorized = false;
+      }
+    });
+    return authorized;
+  };
+
+
+  /**
+  * Init Files Tree Context Menu
+  */
   FilesTree.prototype.initContextMenus = function() {
 
     //
@@ -125,6 +144,7 @@ define([], function() {
   * Add directory to Files Tree
   */
   FilesTree.prototype.addDirectory = function(path) {
+    var self = this;
 
     // Get directory content
     var content = this.getDirectoryContent(path);
@@ -147,13 +167,15 @@ define([], function() {
 
       var childrenNode = $('<div class="children" style="'+(first ? '' : 'display: none;')+'"></div>');
       content.children.forEach(function(child) {
-        if(child.isDirectory) {
-          var nodeChild = $('<div class="node"></div>');
-          nodeChild = processContent(nodeChild, child, false);
-          childrenNode.append(nodeChild);
+        if(child.isDirectory && child.name !== '.git') {
+          var childNode = $('<div class="node"></div>');
+          childNode = processContent(childNode, child, false);
+          childrenNode.append(childNode);
         } else {
-          if(!/\DS_Store/.test(child.name)) {
-            childrenNode.append($('<div class="item file" data-path="'+child.path+'">'+child.name+'</div>'));
+          if(self._isFileAuthorized(child.name)) {
+            var childItem = $('<div class="item file" data-path="'+child.path+'">'+child.name+'</div>');
+            if(/\.ino$/.test(child.name)) childItem.addClass('ino-file');
+            childrenNode.append(childItem);
           }
         }
       });
@@ -231,9 +253,10 @@ define([], function() {
   FilesTree.prototype.initFileTreeEvents = function() {
     var self = this;
 
+    $('.directory, .project, .file').unbind('click').unbind('dblclick').unbind('contextmenu');
+
     // Expand folder item on click
-    $('.files-tree .item').unbind('click');
-    $('.files-tree .item').bind('click',function() {
+    $('.directory, .project').bind('click',function() {
       var item = $(this);
       var node = item.parent();
       var children = $(node.find('.children')[0]);
@@ -250,28 +273,27 @@ define([], function() {
     });
 
     // Select item on click
-    $('.files-tree .children > .item').bind('click', function() {
-      $('.files-tree .children > .item').removeClass('selected');
+    $('.file').bind('click', function() {
+      $('.file').removeClass('selected');
       $(this).addClass('selected');
     });
 
     // Open contextual menu on right-click
-    $('.files-tree .project').bind('contextmenu', function(e) {
+    $('.project').bind('contextmenu', function(e) {
       self.clickedItem = $(this).parent();
       self.projectContextMenu.popup(e.pageX, e.pageY);
     });
-    $('.files-tree .file').bind('contextmenu', function(e) {
+    $('.file').bind('contextmenu', function(e) {
       self.clickedItem = $(this);
       self.fileContextMenu.popup(e.pageX, e.pageY);
     });
-    $('.files-tree .directory').bind('contextmenu', function(e) {
+    $('.directory').bind('contextmenu', function(e) {
       self.clickedItem = $(this).parent();
       self.folderContextMenu.popup(e.pageX, e.pageY);
     });
 
     // Open file on dblclick
-    $('.files-tree .children > .item').unbind('dblclick');
-    $('.files-tree .children > .item').bind('dblclick', function() {
+    $('.file').bind('dblclick', function() {
       self.app.openFile($(this).attr('data-path'));
     });
   };

@@ -1,8 +1,9 @@
 /* global define, $ */
-
-define(['ui/EditorsPanel', 'ui/FilesTree'], function(EditorsPanel, FilesTree) {
-
-  var _ = require('underscore');
+define([
+  'ui/EditorsPanel', 'ui/FilesTree', 'ui/Toolbar'
+], function(
+  EditorsPanel, FilesTree, Toolbar
+) {
 
   /**
   * ArduIDE Layout
@@ -12,13 +13,14 @@ define(['ui/EditorsPanel', 'ui/FilesTree'], function(EditorsPanel, FilesTree) {
     this.el = $('.layout');
     this.initSliders();
     this.initEventHandlers();
+    this.toolbar = new Toolbar(this.app);
     this.filesTree = new FilesTree(this.app);
     this.editorsPanel = new EditorsPanel(this.app);
   };
 
 
   /**
-  *
+  * Initialize Panel Resisizing Sliders
   */
   Layout.prototype.initSliders = function() {
 

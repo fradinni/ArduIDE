@@ -1,1 +1,16 @@
-{}
+{
+  "recentFiles": [
+    "~/Documents/GitPerso/nfradin.fr/Procfile",
+    "~/Documents/GitPerso/nfradin.fr/src/www/compile_templates.js",
+    "~/Documents/GitPerso/nfradin.fr/src/utils/EJSCompiler.js",
+    "~/Documents/GitPerso/nfradin.fr/src/db/article.js",
+    "~/Documents/GitPerso/nfradin.fr/src/db/category.js",
+    "~/Documents/GitPerso/nfradin.fr/src/db/models.js",
+    "~/Documents/GitPerso/nfradin.fr/src/db/user.js",
+    "~/Documents/GitPerso/nfradin.fr/src/routes/router.js"
+  ],
+  "recentDirs": [
+    "~/Documents/GitPerso/nfradin.fr",
+    "~/Documents/Projects/connected-lamp"
+  ]
+}

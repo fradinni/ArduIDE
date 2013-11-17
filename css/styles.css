@@ -84,7 +84,7 @@ input, textarea, select { -webkit-appearance: none; cursor: pointer; }
 */
 .layout {
   position: absolute;
-  top: 32px;
+  top: 31px;
   left: 0;
   right: 0;
   bottom: 30px;
@@ -135,6 +135,7 @@ input, textarea, select { -webkit-appearance: none; cursor: pointer; }
   overflow: hidden;
   -webkit-user-select: none;
   user-select: none;
+  color: #444;
 }
 .files-tree .header {
   font-size: 13px;
@@ -158,12 +159,15 @@ input, textarea, select { -webkit-appearance: none; cursor: pointer; }
 .files-tree .children {
   margin-left: 1em;
 }
-.files-tree .selected {
+.files-tree .selected, .files-tree .ino-file.selected {
   background-color: #9d9d9d;
   color: #fff;
 }
 .files-tree .tree-scroll {
   overflow: scroll;
+}
+.files-tree .ino-file {
+  color: #1fafb3;
 }
 
 /***********************************

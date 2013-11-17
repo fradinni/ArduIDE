@@ -1,4 +1,4 @@
-/* global define, $ */
+/* global define */
 
 /******************************************************************************
 * ArduIDE - Main
@@ -13,10 +13,5 @@ define(['ArduIDE'], function(ArduIDE) {
 
   // Create new app
   new ArduIDE(gui.App.argv);
-
-  // Hide splash screen
-  setTimeout(function(){
-    $('.splash-screen').fadeOut(1000);
-  }, 1000);
 
 });

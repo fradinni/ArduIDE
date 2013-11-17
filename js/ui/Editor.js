@@ -16,6 +16,8 @@ define(['utils/SourceFile'], function(SourceFile) {
     this.tab = this._createTabForEditor();
     this.opened = false;
 
+    var self = this;
+
     // Append tab and editor divs
     $('.tabs .wrapper').append($(this.tab));
     $(this.editorsPanel.el).append($(this.el));
@@ -26,10 +28,10 @@ define(['utils/SourceFile'], function(SourceFile) {
       mode:  this.file.getMIMEType(),
       lineNumbers: true,
       theme: 'ambiance',
-      smartIndent: true
+      smartIndent: true,
+      extraKeys: {}
     });
   };
-
 
   /*
   *

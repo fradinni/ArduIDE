@@ -1,4 +1,4 @@
-/* global define, $ */
+/* global define, $, process */
 define(['ui/Editor'], function(Editor) {
 
   var EditorPanel = function(app) {
@@ -36,7 +36,12 @@ define(['ui/Editor'], function(Editor) {
   *
   */
   EditorPanel.prototype.closeFile = function(index) {
-    this.editors[index].close();
+    var editor = this.editors[index];
+
+    this.app.recentFilesManager.addFile(editor.file.path);
+    this.app.systemMenu.populateOpenRecentMenu();
+
+    editor.close();
     this._removeEditor(index);
     this.setActiveEditor(index > 0 ? index-1 : 0);
   };
@@ -47,6 +52,14 @@ define(['ui/Editor'], function(Editor) {
   */
   EditorPanel.prototype.closeActiveFile = function() {
     this.closeFile(this.activeEditor);
+  };
+
+
+  /**
+  *
+  */
+  EditorPanel.prototype.saveActiveFile = function() {
+    this.getActiveEditor().saveFile();
   };
 
 
@@ -89,6 +102,26 @@ define(['ui/Editor'], function(Editor) {
     // Activate requested editor
     this.editors[index].setActive();
     this.activeEditor = index;
+  };
+
+  EditorPanel.prototype.isFileOpened = function(path) {
+    if(!path) return false;
+    path = path.replace('~', process.env.HOME);
+    var opened = false;
+    this.editors.forEach(function(e) {
+      if(e.file.path === path) {
+        opened = true;
+      }
+    });
+    return opened;
+  };
+
+
+  /**
+  *
+  */
+  EditorPanel.prototype.getActiveEditor = function() {
+    return this.editors[this.activeEditor];
   };
 
   return EditorPanel;

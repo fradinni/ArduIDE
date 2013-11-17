@@ -8,11 +8,12 @@
     "mime": "1.2.11"
   },
   "window": {
+    "show": false,
     "title": "Test",
     "toolbar": true,
     "frame": true,
     "position": "center",
-    "width": 800,
-    "height": 450
+    "width": 1200,
+    "height": 675
   }
 }

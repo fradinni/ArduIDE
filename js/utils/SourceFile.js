@@ -27,7 +27,6 @@ define([], function() {
   */
   SourceFile.prototype._loadFile = function() {
     if( !fs.existsSync(this.path) ) {
-      console.log('File not found: ', this.path);
       return '';
     }
     this.content = fs.readFileSync(this.path).toString();
@@ -42,9 +41,7 @@ define([], function() {
     if(ext === 'ino' || ext === 'pde') {
       return 'text/x-c++src';
     }
-
     var m = mime.lookup(ext);
-    console.log(m);
     return m;
   };
 
@@ -52,7 +49,7 @@ define([], function() {
   * Save config to disk
   */
   SourceFile.prototype.save = function() {
-    fs.writeFileSync(this.content);
+    fs.writeFileSync(this.path, this.content);
   };
 
 

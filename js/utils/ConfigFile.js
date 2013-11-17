@@ -34,12 +34,16 @@ define([], function() {
   * Save config to disk
   */
   ConfigFile.prototype.save = function() {
-    fs.writeFileSync(this.path, JSON.stringify(this.config));
+    fs.writeFileSync(this.path, JSON.stringify(this.config, null, 2));
   };
 
 
   ConfigFile.prototype.toString = function() {
     return JSON.stringify(this.config);
+  };
+
+  ConfigFile.prototype.get = function() {
+    return this.config;
   };
 
 
