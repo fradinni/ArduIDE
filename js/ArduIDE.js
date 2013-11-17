@@ -16,6 +16,9 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
     this.initSytemMenu();
     this.initKeyboardShortcuts();
     argv.forEach((function(file) {
+      if(file.indexOf('.ino') === file.length - 4) {
+        this.openDirectory(file.substring(0, file.lastIndexOf('/')));
+      }
       this.openFile(file);
     }).bind(this));
   };
@@ -149,6 +152,10 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
     } else {
       this.layout.editorsPanel.openFile(file);
     }
+  };
+
+  ArduIDE.prototype.visuFile = function(file) {
+    this.layout.editorsPanel.openFile(file, true);
   };
 
 

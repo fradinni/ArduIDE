@@ -14,6 +14,7 @@ define(['utils/SourceFile'], function(SourceFile) {
     this.el = $('<div class="editor" data-id="'+index+'"></div>');
     this.file = new SourceFile(file);
     this.tab = this._createTabForEditor();
+    this.opened = false;
 
     // Append tab and editor divs
     $('.tabs .wrapper').append($(this.tab));
@@ -96,6 +97,14 @@ define(['utils/SourceFile'], function(SourceFile) {
   Editor.prototype.setIndex = function(index) {
     this.index = index;
     $(this.el).attr('data-id', index);
+  };
+
+  Editor.prototype.setOpened = function(opened) {
+    this.opened = opened || false;
+  };
+
+  Editor.prototype.isOpened = function() {
+    return this.opened;
   };
 
   /**

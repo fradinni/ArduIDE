@@ -41,7 +41,7 @@ define([], function() {
           childrenNode.append(nodeChild);
         } else {
           if(!/\DS_Store/.test(child.name)) {
-            childrenNode.append($('<div class="item">'+child.name+'</div>'));
+            childrenNode.append($('<div class="item" data-path="'+child.path+'">'+child.name+'</div>'));
           }
         }
       });
@@ -109,6 +109,8 @@ define([], function() {
   *
   */
   FilesTree.prototype.initFileTreeEvents = function() {
+    var self = this;
+
     $('.files-tree .item').unbind('click');
     $('.files-tree .item').bind('click',function() {
       var item = $(this);
@@ -133,6 +135,16 @@ define([], function() {
     $('.files-tree .children > .item').bind('click', function() {
       $('.files-tree .children > .item').removeClass('selected');
       $(this).addClass('selected');
+    });
+
+    // $('.files-tree .children > .item').unbind('click');
+    // $('.files-tree .children > .item').bind('click', function() {
+    //   self.app.visuFile($(this).attr('data-path'));
+    // });
+
+    $('.files-tree .children > .item').unbind('dblclick');
+    $('.files-tree .children > .item').bind('dblclick', function() {
+      self.app.openFile($(this).attr('data-path'));
     });
   };
 

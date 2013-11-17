@@ -11,11 +11,18 @@ define(['ui/Editor'], function(Editor) {
   /**
   *
   */
-  EditorPanel.prototype.openFile = function(file) {
+  EditorPanel.prototype.openFile = function(file, visualize) {
+
+    this.editors.forEach((function(e, index) {
+      if(!e.isOpened()) {
+        this.closeFile(index);
+      }
+    }).bind(this));
 
     // Create new editor
     var editorIndex = this.editors.length;
     var editor = new Editor(this, editorIndex, file);
+    editor.setOpened(!(visualize || false));
 
     // Add editor to editors list
     this.editors.push(editor);
@@ -75,9 +82,9 @@ define(['ui/Editor'], function(Editor) {
     }
 
     // Desactivate all editors
-    this.editors.forEach(function(editor) {
+    this.editors.forEach((function(editor) {
       editor.setInactive();
-    });
+    }).bind(this));
 
     // Activate requested editor
     this.editors[index].setActive();
