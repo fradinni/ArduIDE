@@ -24,40 +24,26 @@
         </select>
       </div>
       <div class="layout">
+
+        <!-- West Panel -->
         <div class="layout-panel layout-west">
           <div class="files-tree">
             <div class="header">Projets</div>
-            <div class="tree-scroll">
-
-             <!--  <div class="node exapanded">
-                <div class="item"><i class="fa fa-caret-down"></i>ArduIDE</div>
-                <div class="children">
-
-                  <div class="node expanded">
-                    <div class="item"><i class="fa fa-caret-down"></i>css</div>
-                    <div class="children">
-                      <div class="item">reset.css</div>
-                      <div class="item selected">styles.css</div>
-                    </div>
-                  </div>
-
-                  <div class="item">package.json</div>
-                  <div class="item">README.md</div>
-                </div>
-              </div> -->
-
-            </div><!-- Scroll -->
-          </div><!-- file-tree -->
+            <div class="tree-scroll"></div>
+          </div>
         </div>
 
+        <!-- West/Center Separator -->
         <div class="layout-separator"><div class="layout-slider"></div></div>
 
+        <!-- Center Panel -->
         <div class="layout-panel layout-center">
           <div class="tabs">
             <div class="wrapper"></div>
           </div>
           <div class="editors"></div>
         </div>
+
       </div>
 
       <div class="status-bar">
@@ -68,6 +54,7 @@
     <!-- -->
     <input type="file" id="openFile" style="display: none" multiple>
     <input type="file" id="openDir" style="display: none" nwdirectory>
+    <input type="file" id="saveFileAs" style="display: none" nwsaveas />
 
     <!-- Scripts -->
     <script type="text/javascript" src="libs/jquery-2.0.3.js"></script>

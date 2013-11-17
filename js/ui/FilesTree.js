@@ -3,6 +3,7 @@ define([], function() {
 
   var fs = require('fs');
   var gui = require('nw.gui');
+  var FileWatcher = require('chokidar');
 
 
   /**
@@ -11,6 +12,7 @@ define([], function() {
   var FilesTree = function(app) {
     this.app = app;
     this.el = $('.files-tree');
+    this.watchers = {};
 
     this.clickedItem = null;
 
@@ -19,8 +21,8 @@ define([], function() {
     this.projectContextMenu = null;
 
     this._excludedFiles = [
-      /^\.DS_Store$/,
-      /^\.git$/
+      /\.DS_Store$/,
+      /\.git$/
     ];
 
     this.initContextMenus();
@@ -66,6 +68,7 @@ define([], function() {
       label: 'Fermer le projet',
       click: (function() {
         this.removeDirectory(this.clickedItem);
+        this.clickedItem = null;
       }).bind(this)
     }));
 
@@ -146,15 +149,43 @@ define([], function() {
   FilesTree.prototype.addDirectory = function(path) {
     var self = this;
 
+    console.log('Open dir', path);
+
     // Get directory content
     var content = this.getDirectoryContent(path);
+
+    //
+    //
+    //
+    function addFileToDir(path) {
+      var dirPath = path.substring(0, path.lastIndexOf('/'));
+      var fileName = path.substring(path.lastIndexOf('/')+1);
+      var nodeItem = $('.item[data-path="'+dirPath+'"]').parent();
+      var childrenNode = $(nodeItem.find('.children')[0]);
+      if(self._isFileAuthorized(fileName)) {
+        var childItem = $('<div class="item file" data-path="'+path+'">'+fileName+'</div>');
+        if(/\.ino$/.test(fileName)) childItem.addClass('ino-file');
+        childrenNode.append(childItem);
+      }
+    }
+
+    //
+    //
+    //
+    function removeFile(path) {
+      var nodeItem = $('.item[data-path="'+path+'"]');
+      if(nodeItem.hasClass('directory')) nodeItem = nodeItem.parent();
+      nodeItem.remove();
+    }
+
 
     //
     // Function: Process directory content
     //
     function processContent(node, content, first) {
-      var nodeItem = $('<div class="item">'+content.name+'</div>');
+      var nodeItem = $('<div class="item" data-path="'+content.path+'">'+content.name+'</div>');
 
+      // If first node, it's a project node
       if(first) {
         nodeItem.prepend('<i class="fa fa-caret-down"></i>');
         nodeItem.addClass('project');
@@ -162,9 +193,9 @@ define([], function() {
         nodeItem.prepend('<i class="fa fa-caret-right"></i>');
         nodeItem.addClass('directory');
       }
-
       node.append(nodeItem);
 
+      // Parse children of curretn node
       var childrenNode = $('<div class="children" style="'+(first ? '' : 'display: none;')+'"></div>');
       content.children.forEach(function(child) {
         if(child.isDirectory && child.name !== '.git') {
@@ -188,6 +219,30 @@ define([], function() {
     var node = $('<div class="node expanded"></div>');
     node = processContent(node, content, true);
     $('.files-tree .tree-scroll').append(node);
+
+    // Add watcher on this directory
+    var nodeWatcher = FileWatcher.watch(content.path, {
+      ignored: function(path) {
+        if(/node_modules/.test(path))
+          return true;
+        if(/\.git$/.test(path))
+          return true;
+        return false;
+      },
+      ignoreInitial: true,
+      interval: 1000,
+      binaryInterval: 60000,
+    });
+    nodeWatcher.on('add', function(path) {
+      addFileToDir(path);
+    });
+    nodeWatcher.on('unlink', function(path) {
+      removeFile(path);
+    });
+    // nodeWatcher.on('change', function(path) {
+    //   console.log('File changed: ', path);
+    // });
+    this.watchers[content.path] = nodeWatcher;
 
     // Init events
     this.initFileTreeEvents();
@@ -243,6 +298,9 @@ define([], function() {
   *
   */
   FilesTree.prototype.removeDirectory = function(elmt) {
+    var path = $($(elmt).find('.item')[0]).attr('data-path');
+    this.watchers[path].close();
+    delete this.watchers[path];
     $('.files-tree').find(elmt).remove();
   };
 

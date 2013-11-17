@@ -57,10 +57,15 @@ define([
       this.saveActiveFile();
     }).bind(this);
 
+    CodeMirror.commands.saveFileAs = (function() {
+      this.saveAsDialog();
+    }).bind(this);
+
     CodeMirror.keyMap['default']['Cmd-O'] = 'openFile';
     CodeMirror.keyMap['default']['Ctrl-W'] = 'closeFile';
     CodeMirror.keyMap['default']['Shift-Cmd-O'] = 'openDirectory';
     CodeMirror.keyMap['default']['Cmd-S'] = 'saveFile';
+    CodeMirror.keyMap['default']['Shift-Cmd-S'] = 'saveFileAs';
   };
 
 
@@ -126,7 +131,35 @@ define([
   *
   */
   ArduIDE.prototype.saveActiveFile = function() {
+
+    var editor = this.layout.editorsPanel.getActiveEditor();
+
+    if(!editor.file.path)
+      return this.saveAsDialog();
+
+    // Save file
     this.layout.editorsPanel.saveActiveFile();
+
+    // Display status bar text
+    var filePath = this.layout.editorsPanel.getActiveEditor().file.path;
+    filePath.replace(process.env.HOME, '~');
+    this.setStatusBarText('File saved ' + filePath, 3000);
+  };
+
+  /**
+  *
+  */
+  ArduIDE.prototype.saveActiveFileAs = function(path) {
+    if(!path) return;
+
+    // Update editor file path
+    var editor = this.layout.editorsPanel.getActiveEditor();
+    editor.setFilePath(path);
+
+    // Save file
+    this.layout.editorsPanel.saveActiveFile();
+
+    // Display status bar text
     var filePath = this.layout.editorsPanel.getActiveEditor().file.path;
     filePath.replace(process.env.HOME, '~');
     this.setStatusBarText('File saved ' + filePath, 3000);
@@ -157,7 +190,25 @@ define([
       if(callback) callback($(this).val());
       else self.openDirectory($(this).val());
     });
-    $('#openDir').click();
+    $('#openDir').trigger('click');
+  };
+
+
+  /**
+  * Open Save As Dialog
+  */
+  ArduIDE.prototype.saveAsDialog = function(callback) {
+    var self = this;
+    $('#saveFileAs').unbind('change');
+    $('#saveFileAs').bind('change',function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if(callback) callback($(this).val());
+      else self.saveActiveFileAs($(this).val());
+      return false;
+    });
+    $('#saveFileAs').attr('nwsaveas', this.layout.editorsPanel.getActiveEditor().file.name);
+    $('#saveFileAs').trigger('click');
   };
 
 

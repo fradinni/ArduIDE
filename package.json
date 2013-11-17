@@ -5,7 +5,8 @@
   "main": "index.html",
   "dependencies": {
     "underscore":"x",
-    "mime": "1.2.11"
+    "mime": "1.2.11",
+    "chokidar": "0.7.0"
   },
   "window": {
     "show": false,

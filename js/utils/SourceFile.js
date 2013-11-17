@@ -12,7 +12,7 @@ define([], function() {
   */
   var SourceFile = function (path) {
     this.path = path;
-    this.name = this.path ? path.substring(path.lastIndexOf('/')+1) : 'undefined';
+    this.name = this.path ? this.path.substring(this.path.lastIndexOf('/')+1) : 'undefined';
     this.content = '';
     this.mimeType = 'text/x-c++src';
 
@@ -26,7 +26,7 @@ define([], function() {
   * Load config file from disk. If file doesn't existsn create it.
   */
   SourceFile.prototype._loadFile = function() {
-    if( !fs.existsSync(this.path) ) {
+    if(!this.path || !fs.existsSync(this.path) ) {
       return '';
     }
     this.content = fs.readFileSync(this.path).toString();
@@ -50,6 +50,16 @@ define([], function() {
   */
   SourceFile.prototype.save = function() {
     fs.writeFileSync(this.path, this.content);
+  };
+
+
+  /**
+  * Update file path
+  */
+  SourceFile.prototype.setPath = function(path) {
+    this.path = path;
+    this.name = this.path ? this.path.substring(this.path.lastIndexOf('/')+1) : 'undefined';
+    this.mimeType = this.getMIMEType();
   };
 
 

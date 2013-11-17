@@ -37,7 +37,7 @@ define(['utils/SourceFile'], function(SourceFile) {
   *
   */
   Editor.prototype._createTabForEditor= function() {
-    var element = $('<div class="tab">'+this.file.name+'<span class="tab-close">x</span></div>');
+    var element = $('<div class="tab"><span class="filename">'+this.file.name+'</span><span class="tab-close">x</span></div>');
 
     var close_clicked =  false;
 
@@ -63,7 +63,9 @@ define(['utils/SourceFile'], function(SourceFile) {
   * Reload file content
   */
   Editor.prototype.reloadFile = function() {
-
+    this.file._loadFile();
+    this.codeMirror.setValue(this.file.content);
+    this.codeMirror.refresh();
   };
 
 
@@ -73,6 +75,7 @@ define(['utils/SourceFile'], function(SourceFile) {
   Editor.prototype.saveFile = function() {
     this.file.content = this.codeMirror.getValue();
     this.file.save();
+    this.tab.find('.filename').text(this.file.name);
   };
 
 
@@ -93,6 +96,7 @@ define(['utils/SourceFile'], function(SourceFile) {
     $(this.el).addClass('active');
     setTimeout((function() {
       this.codeMirror.refresh();
+      this.codeMirror.focus();
     }).bind(this), 0);
   };
 
@@ -115,6 +119,13 @@ define(['utils/SourceFile'], function(SourceFile) {
   Editor.prototype.setInactive = function() {
     $(this.tab).removeClass('active');
     $(this.el).removeClass('active');
+  };
+
+  /**
+  * Update file path
+  */
+  Editor.prototype.setFilePath = function(path) {
+    this.file.setPath(path);
   };
 
   return Editor;
