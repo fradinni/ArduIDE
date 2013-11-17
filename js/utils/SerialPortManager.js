@@ -10,16 +10,19 @@ define([], function() {
   var SerialPortManager = function(app) {
     this.app = app;
     this.serialPort = null;
+    this.connected = false;
     this.serialPorts = [];
     this.serialPortsWatcher = setInterval((function(){
       this.listSerialPorts();
-    }).bind(this), 2000);
+    }).bind(this), 1000);
   };
 
   /**
   *
   */
   SerialPortManager.prototype.listSerialPorts = function() {
+    if(this.connected) return this.serialPorts;
+
     var self = this;
     var _ports = [];
     serialport.list(function (err, ports) {
@@ -52,6 +55,7 @@ define([], function() {
   *
   */
   SerialPortManager.prototype.openConnection = function(port, speed, onData, callback) {
+    var self = this;
     if(!_.contains(this.serialPorts, port)) return false;
 
     var serial = this.serialPort = new SerialPort(port, {
@@ -67,6 +71,7 @@ define([], function() {
     });
 
     serial.on('open', function() {
+      self.connected = true;
       serial.on('data', function(data) {
         onData(data);
       });
@@ -74,6 +79,8 @@ define([], function() {
     });
 
     serial.on('close', function() {
+      self.connected = false;
+      self.serialPort = null;
       console.log('Close serial connnection !');
     });
   };
