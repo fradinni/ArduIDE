@@ -17,8 +17,10 @@
         <div class="icon serial"><div class="text"><i class="fa fa-desktop"></i></div></div>
         <div class="icon compile"><div class="text"><i class="fa fa-repeat"></i></div></div>
         <div class="icon upload"><div class="text"><i class="fa fa-upload"></i></div></div>
-        <select><option>/dev/tty.2235</option></select>
-        <select>
+        <select id="serialPorts">
+          <option>Loading...</option>
+        </select>
+        <select id="devices">
           <option>Arduino UNO</option>
           <option>Arduino Leonardo (w/Atmega32u4)</option>
         </select>

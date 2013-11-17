@@ -1,4 +1,4 @@
-/* global define */
+/* global define, global */
 
 /******************************************************************************
 * ArduIDE - Main
@@ -12,6 +12,6 @@ define(['ArduIDE'], function(ArduIDE) {
   var gui = require('nw.gui');
 
   // Create new app
-  new ArduIDE(gui.App.argv);
+  process.App = new ArduIDE(gui.App.argv);
 
 });

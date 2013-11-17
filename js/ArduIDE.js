@@ -1,9 +1,9 @@
 /* global define, $, CodeMirror, process */
 define([
-  'utils/ConfigFile', 'utils/RecentFilesManager',
+  'utils/ConfigFile', 'utils/RecentFilesManager', 'utils/SerialPortManager',
   'ui/Layout', 'ui/SystemMenu'
-], function(
-  ConfigFile, RecentFilesManager,
+], function (
+  ConfigFile, RecentFilesManager, SerialPortManager,
   Layout, SystemMenu
 ) {
 
@@ -15,12 +15,14 @@ define([
   var ArduIDE = function(argv) {
     this.version = '0.1.0a';
     this.config = new ConfigFile('config.json');
+    this.serialPortManager = new SerialPortManager(this);
     this.recentFilesManager = new RecentFilesManager(this);
 
     this._addEditorExtraKeys();
 
     this.layout = new Layout(this);
     this.systemMenu = new SystemMenu(this);
+    this.serialWindow = null;
 
      // Hide splash screen
     setTimeout(function(){
@@ -229,6 +231,37 @@ define([
         sb.text(sbText);
       }, autoHideDelay);
     }
+  };
+
+
+  /**
+  *
+  */
+  ArduIDE.prototype.updateSerialPortsSelect = function() {
+    this.layout.toolbar.updateSerialPortsSelect(this.serialPortManager.serialPorts);
+  };
+
+  ArduIDE.prototype.getSelectedSerialPort = function() {
+    return this.serialPortManager.serialPorts[this.layout.toolbar.getSelectedSerialPort()];
+  };
+
+  ArduIDE.prototype.openSerialWindow = function() {
+    if(this.serialWindow) return;
+    var self = this;
+    this.serialWindow = gui.Window.open('./serial.html', {
+      position: 'center',
+      toolbar: false,
+      title: 'Moniteur série',
+      width: 500,
+      height: 300
+    });
+    this.serialWindow.on('close', function() {
+      self.serialPortManager.closeConnection();
+      this.hide(); // Pretend to be closed already
+      this.close(true);
+      self.serialWindow = null;
+    });
+    this.serialWindow.focus();
   };
 
 

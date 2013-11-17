@@ -8,6 +8,7 @@ define([], function() {
     this.app = app;
     this.el = $('.toolbar');
     this.initToolbarButtons();
+    this.initToolbarEvent();
   };
 
 
@@ -54,6 +55,36 @@ define([], function() {
       sb.text(sbText);
     });
   };
+
+
+  Toolbar.prototype.initToolbarEvent = function() {
+    var self = this;
+    $('.serial').unbind('click');
+    $('.serial').bind('click', function() {
+      self.app.openSerialWindow();
+    });
+  };
+
+
+  /**
+  * Update serial ports list select
+  */
+  Toolbar.prototype.updateSerialPortsSelect = function(ports) {
+    var select = $('#serialPorts');
+    select.html('');
+    ports.forEach(function(p, index) {
+      var item = $('<option></option>');
+      item.attr('value', index);
+      item.html(p);
+      select.append(item);
+    });
+  };
+
+
+  Toolbar.prototype.getSelectedSerialPort = function() {
+    return $('#serialPorts').val();
+  };
+
 
   return Toolbar;
 });

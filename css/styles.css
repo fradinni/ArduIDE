@@ -1,5 +1,5 @@
 html, body { height: 100%; background-color: #e6e6e6; overflow: hidden; font-size: 13px; cursor: default; font-family: "Helvetica Neue"; }
-input, textarea, select { -webkit-appearance: none; cursor: pointer; }
+input, textarea, select { -webkit-appearance: none; outline: none; cursor: pointer; }
 .splash-screen {
   position: absolute;
   z-index: 100;
