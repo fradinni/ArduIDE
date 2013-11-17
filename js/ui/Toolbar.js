@@ -76,6 +76,9 @@ define([], function() {
       var item = $('<option></option>');
       item.attr('value', index);
       item.html(p);
+      if(/usbmodem/.test(p)) {
+        item.attr('selected', 'selected');
+      }
       select.append(item);
     });
   };
