@@ -5,40 +5,69 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <link rel="stylesheet" type="text/css" href="libs/editor/codemirror.css">
     <link rel="stylesheet" type="text/css" href="libs/editor/theme/arduide.css">
-
   </head>
   <body>
     <div class="splash-screen"></div>
     <div class="application">
       <div class="toolbar">
-        <a href="#" class="toolbar-btn btn-default open-file">Open</a>
-        <a href="#" class="toolbar-btn btn-default"></a>
-        <a href="#" class="toolbar-btn btn-default"></a>
+        <div class="icon serial"><div class="text"><i class="fa fa-desktop"></i></div></div>
+        <div class="icon compile"><div class="text"><i class="fa fa-repeat"></i></div></div>
+        <div class="icon upload"><div class="text"><i class="fa fa-upload"></i></div></div>
+        <select><option>/dev/tty.2235</option></select>
+        <select>
+          <option>Arduino UNO</option>
+          <option>Arduino Leonardo (w/Atmega32u4)</option>
+        </select>
       </div>
       <div class="layout">
-        <div class="layout-panel layout-west">West</div>
+        <div class="layout-panel layout-west">
+          <div class="files-tree">
+            <div class="header">Projets</div>
+            <div class="tree-scroll">
+
+             <!--  <div class="node exapanded">
+                <div class="item"><i class="fa fa-caret-down"></i>ArduIDE</div>
+                <div class="children">
+
+                  <div class="node expanded">
+                    <div class="item"><i class="fa fa-caret-down"></i>css</div>
+                    <div class="children">
+                      <div class="item">reset.css</div>
+                      <div class="item selected">styles.css</div>
+                    </div>
+                  </div>
+
+                  <div class="item">package.json</div>
+                  <div class="item">README.md</div>
+                </div>
+              </div> -->
+
+            </div><!-- Scroll -->
+          </div><!-- file-tree -->
+        </div>
+
         <div class="layout-separator"><div class="layout-slider"></div></div>
+
         <div class="layout-panel layout-center">
           <div class="tabs">
-            <div class="wrapper">
-              <!-- <div class="tab selected">main.js<span class="tab-close">x</span></div>
-              <div class="tab">ConfigFile.js<span class="tab-close">x</span></div>
-              <div class="tab">SockeCloseHandlerEvent.js<span class="tab-close">x</span></div>
-              <div class="tab">package.json<span class="tab-close">x</span></div> -->
-            </div>
+            <div class="wrapper"></div>
           </div>
-          <div class="editors">
-
-          </div>
+          <div class="editors"></div>
         </div>
+      </div>
+
+      <div class="status-bar">
+        ArduIDE is ready !
       </div>
     </div>
 
     <!-- -->
-    <input type="file" id="openFile" style="display: none">
+    <input type="file" id="openFile" style="display: none" multiple>
+    <input type="file" id="openDir" style="display: none" nwdirectory>
 
     <!-- Scripts -->
     <script type="text/javascript" src="libs/jquery-2.0.3.js"></script>

@@ -1,7 +1,8 @@
 /* global define, $ */
 define(['ui/Editor'], function(Editor) {
 
-  var EditorPanel = function() {
+  var EditorPanel = function(app) {
+    this.app = app;
     this.el = $('.editors');
     this.editors = [];
     this.activeEditor = -1;
@@ -28,7 +29,6 @@ define(['ui/Editor'], function(Editor) {
   *
   */
   EditorPanel.prototype.closeFile = function(index) {
-    console.log('close', index);
     this.editors[index].close();
     this._removeEditor(index);
     this.setActiveEditor(index > 0 ? index-1 : 0);
@@ -73,8 +73,6 @@ define(['ui/Editor'], function(Editor) {
       this.activeEditor = -1;
       return;
     }
-
-    if(index === this.activeEditor) return;
 
     // Desactivate all editors
     this.editors.forEach(function(editor) {

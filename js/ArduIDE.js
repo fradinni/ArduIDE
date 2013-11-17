@@ -1,6 +1,7 @@
 /* global define, $, Mousetrap */
 define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
 
+  var fs = require('fs');
   var gui = require('nw.gui');
   var Window = gui.Window.get();
 
@@ -10,7 +11,7 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
   var ArduIDE = function(argv) {
     this.version = '0.1.0a';
     this.config = new ConfigFile('config.json');
-    this.layout = new Layout();
+    this.layout = new Layout(this);
     this.initToolbarButtons();
     this.initSytemMenu();
     this.initKeyboardShortcuts();
@@ -48,6 +49,9 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
         this.chooseFile();
       }).bind(this)
     }));
+    Mousetrap.bind('ctrl+o', (function() {
+      this.chooseFile();
+    }).bind(this));
 
     var openRecentMenu = new gui.Menu();
     openRecentMenu.append(new gui.MenuItem({
@@ -60,6 +64,16 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
       label: 'Ouvrir récent',
       submenu: openRecentMenu
     }));
+
+    fileMenu.append(new gui.MenuItem({
+      label: 'Ouvrir dossier...',
+      click: (function() {
+        this.chooseDirectory();
+      }).bind(this)
+    }));
+    Mousetrap.bind('ctrl+shift+o', (function() {
+      this.chooseDirectory();
+    }).bind(this));
 
     //assign the menubar to window menu
     Window.menu = menu;
@@ -82,11 +96,44 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
   *
   */
   ArduIDE.prototype.initToolbarButtons = function() {
-    $('.open-file').click((function() {
-      this.chooseFile((function(path) {
-        this.openFile(path);
-      }).bind(this));
+    var sb = $('.status-bar');
+    var sbText;
+
+    // Compile
+    $('.compile').click((function() {
+
     }).bind(this));
+
+    $('.compile').hover(function() {
+      sbText = sb.html();
+      sb.text('Compiler le programme...');
+    }, function() {
+      sb.text(sbText);
+    });
+
+    // Upload
+    $('.upload').click((function() {
+
+    }).bind(this));
+
+    $('.upload').hover(function() {
+      sbText = sb.html();
+      sb.text('Uploader le programme...');
+    }, function() {
+      sb.text(sbText);
+    });
+
+    // Serial Monitor
+    $('.serial').click((function() {
+
+    }).bind(this));
+
+    $('.serial').hover(function() {
+      sbText = sb.html();
+      sb.text('Moniteur port série...');
+    }, function() {
+      sb.text(sbText);
+    });
   };
 
 
@@ -94,7 +141,19 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
   *
   */
   ArduIDE.prototype.openFile = function(file) {
-    this.layout.editorsPanel.openFile(file);
+    var self = this;
+    if(file.indexOf(';') > 0) {
+      file.split(';').forEach(function(f){
+        self.layout.editorsPanel.openFile(f);
+      });
+    } else {
+      this.layout.editorsPanel.openFile(file);
+    }
+  };
+
+
+  ArduIDE.prototype.openDirectory = function(path) {
+    this.layout.filesTree.addDirectory(path);
   };
 
 
@@ -113,6 +172,16 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
       else self.openFile($(this).val());
     });
     $('#openFile').click();
+  };
+
+  ArduIDE.prototype.chooseDirectory = function(callback) {
+    var self = this;
+    $('#openDir').unbind('change');
+    $('#openDir').bind('change',function() {
+      if(callback) callback($(this).val());
+      else self.openDirectory($(this).val());
+    });
+    $('#openDir').click();
   };
 
 

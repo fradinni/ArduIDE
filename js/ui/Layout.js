@@ -1,6 +1,6 @@
 /* global define, $ */
 
-define(['ui/EditorsPanel'], function(EditorsPanel) {
+define(['ui/EditorsPanel', 'ui/FilesTree'], function(EditorsPanel, FilesTree) {
 
   var _ = require('underscore');
 
@@ -12,7 +12,8 @@ define(['ui/EditorsPanel'], function(EditorsPanel) {
     this.el = $('.layout');
     this.initSliders();
     this.initEventHandlers();
-    this.editorsPanel = new EditorsPanel();
+    this.filesTree = new FilesTree(this.app);
+    this.editorsPanel = new EditorsPanel(this.app);
   };
 
 
@@ -64,6 +65,7 @@ define(['ui/EditorsPanel'], function(EditorsPanel) {
     $('.layout-west').css('width', westWidth+'px');
     $('.layout-separator').css('width', separatorWidth+'px');
     $('.layout-center').css('width', (width - westWidth - separatorWidth)+'px' );
+    $('.tree-scroll').css('height', $('.files-tree').height()+'px');
   };
 
 
