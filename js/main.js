@@ -1,4 +1,4 @@
-/* global define, global */
+/* global define, console, process */
 
 /******************************************************************************
 * ArduIDE - Main
@@ -8,6 +8,8 @@
 *
 */
 define(['ArduIDE'], function(ArduIDE) {
+
+  process.on('uncaughtException', function(err) { console.error('error: ' + err); });
 
   var gui = require('nw.gui');
 

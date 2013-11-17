@@ -11,12 +11,17 @@ define([], function() {
 
   var textarea = $('textarea');
   function onData(data) {
-    textarea.text(textarea.html()+data);
+    textarea.append(data.toString());
+    setTimeout(function(){
+      textarea.scrollTop(textarea[0].scrollHeight);
+    }, 100);
   }
 
   serialPortManager.openConnection(port, speed, onData, function(err) {
     if(err) {
-      alert('Unable to open serial port !');
+      $('.status').text('Unable to open serial port !');
+    } else {
+      $('.status').text('Connected.');
     }
   });
 

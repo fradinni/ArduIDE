@@ -55,7 +55,11 @@ define([], function() {
     if(!_.contains(this.serialPorts, port)) return false;
 
     var serial = this.serialPort = new SerialPort(port, {
-      baudrate: speed
+      baudrate: speed,
+      dataBits: 8,
+      parity: 'none',
+      stopBits: 1,
+      flowControl: false
     }, true, function(err) {
       if(err) {
         return callback(err);
