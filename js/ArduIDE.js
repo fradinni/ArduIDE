@@ -78,6 +78,65 @@ define(['utils/ConfigFile', 'ui/Layout'], function(ConfigFile, Layout) {
       this.chooseDirectory();
     }).bind(this));
 
+
+    fileMenu.append(new gui.MenuItem({ type: 'separator' }));
+
+
+    fileMenu.append(new gui.MenuItem({
+      label: 'Enregistrer',
+      click: (function() {
+
+      }).bind(this)
+    }));
+    Mousetrap.bind('ctrl+s', (function() {
+
+    }).bind(this));
+
+    fileMenu.append(new gui.MenuItem({
+      label: 'Enregistrer sous...',
+      click: (function() {
+
+      }).bind(this)
+    }));
+    Mousetrap.bind('ctrl+shift+s', (function() {
+
+    }).bind(this));
+
+    fileMenu.append(new gui.MenuItem({
+      label: 'Enregistrer tout les fichiers',
+      click: (function() {
+
+      }).bind(this)
+    }));
+    Mousetrap.bind('alt+shift+s', (function() {
+
+    }).bind(this));
+
+
+    fileMenu.append(new gui.MenuItem({ type: 'separator' }));
+
+
+    fileMenu.append(new gui.MenuItem({
+      label: 'Fermer le fichier',
+      click: (function() {
+        this.closeActiveFile();
+      }).bind(this)
+    }));
+    Mousetrap.bind('ctrl+shift+s', (function() {
+
+    }).bind(this));
+
+    fileMenu.append(new gui.MenuItem({
+      label: 'Fermer tous les fichiers',
+      click: (function() {
+
+      }).bind(this)
+    }));
+    Mousetrap.bind('ctrl+shift+s', (function() {
+
+    }).bind(this));
+
+
     //assign the menubar to window menu
     Window.menu = menu;
     menu.insert(new gui.MenuItem({ label: 'Fichier', submenu: fileMenu}), 1);

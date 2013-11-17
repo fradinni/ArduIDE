@@ -2,6 +2,7 @@
 define([], function() {
 
   var fs = require('fs');
+  var gui = require('nw.gui');
 
 
   /**
@@ -10,7 +11,113 @@ define([], function() {
   var FilesTree = function(app) {
     this.app = app;
     this.el = $('.files-tree');
+
+    this.clickedItem = null;
+
+    this.folderContextMenu = null;
+    this.fileContextMenu = null;
+    this.projectContextMenu = null;
+
+    this.initContextMenus();
     this.initFileTreeEvents();
+  };
+
+  FilesTree.prototype.initContextMenus = function() {
+
+    //
+    // Project context menu
+    //
+    this.projectContextMenu = new gui.Menu();
+    this.projectContextMenu.append(new gui.MenuItem({
+      label: 'Nouveau fichier',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+    this.projectContextMenu.append(new gui.MenuItem({
+      label: 'Nouveau dossier...',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+    this.projectContextMenu.append(new gui.MenuItem({ type: 'separator' }));
+    this.projectContextMenu.append(new gui.MenuItem({
+      label: 'Fermer le projet',
+      click: (function() {
+        this.removeDirectory(this.clickedItem);
+      }).bind(this)
+    }));
+
+    //
+    // File context menu
+    //
+    this.fileContextMenu = new gui.Menu();
+    this.fileContextMenu.append(new gui.MenuItem({
+      label: 'Renomer...',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+    this.fileContextMenu.append(new gui.MenuItem({
+      label: 'Supprimer le fichier',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+    this.fileContextMenu.append(new gui.MenuItem({ type: 'separator' }));
+    this.fileContextMenu.append(new gui.MenuItem({
+      label: 'Afficher dans le finder',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+
+    //
+    // Folder context menu
+    //
+    this.folderContextMenu = new gui.Menu();
+    this.folderContextMenu.append(new gui.MenuItem({
+      label: 'Nouveau fichier',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+    this.folderContextMenu.append(new gui.MenuItem({
+      label: 'Renomer...',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+    this.folderContextMenu.append(new gui.MenuItem({ type: 'separator' }));
+    this.folderContextMenu.append(new gui.MenuItem({
+      label: 'Nouveau dossier...',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+    this.folderContextMenu.append(new gui.MenuItem({
+      label: 'Supprimer le dossier...',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
+    this.folderContextMenu.append(new gui.MenuItem({ type: 'separator' }));
+    this.folderContextMenu.append(new gui.MenuItem({
+      label: 'Afficher dans le finder',
+      enabled: false,
+      click: (function() {
+
+      }).bind(this)
+    }));
   };
 
 
@@ -28,8 +135,13 @@ define([], function() {
     function processContent(node, content, first) {
       var nodeItem = $('<div class="item">'+content.name+'</div>');
 
-      if(first) nodeItem.prepend('<i class="fa fa-caret-down"></i>');
-      else nodeItem.prepend('<i class="fa fa-caret-right"></i>');
+      if(first) {
+        nodeItem.prepend('<i class="fa fa-caret-down"></i>');
+        nodeItem.addClass('project');
+      } else {
+        nodeItem.prepend('<i class="fa fa-caret-right"></i>');
+        nodeItem.addClass('directory');
+      }
 
       node.append(nodeItem);
 
@@ -41,7 +153,7 @@ define([], function() {
           childrenNode.append(nodeChild);
         } else {
           if(!/\DS_Store/.test(child.name)) {
-            childrenNode.append($('<div class="item" data-path="'+child.path+'">'+child.name+'</div>'));
+            childrenNode.append($('<div class="item file" data-path="'+child.path+'">'+child.name+'</div>'));
           }
         }
       });
@@ -108,9 +220,18 @@ define([], function() {
   /**
   *
   */
+  FilesTree.prototype.removeDirectory = function(elmt) {
+    $('.files-tree').find(elmt).remove();
+  };
+
+
+  /**
+  *
+  */
   FilesTree.prototype.initFileTreeEvents = function() {
     var self = this;
 
+    // Expand folder item on click
     $('.files-tree .item').unbind('click');
     $('.files-tree .item').bind('click',function() {
       var item = $(this);
@@ -118,7 +239,7 @@ define([], function() {
       var children = $(node.find('.children')[0]);
 
       // If node is expanded
-      if(node.hasClass('expanded')) {
+      if(children && node.hasClass('expanded')) {
         children.slideUp(200);
         item.find('i').removeClass('fa fa-caret-down').addClass('fa fa-caret-right');
       } else {
@@ -126,22 +247,29 @@ define([], function() {
         item.find('i').removeClass('fa fa-caret-right').addClass('fa fa-caret-down');
       }
       node.toggleClass('expanded');
-
-      // $('.files-tree .item').removeClass('selected');
-      // $(this).addClass('selected');
     });
 
-    $('.files-tree .children > .item').unbind('click');
+    // Select item on click
     $('.files-tree .children > .item').bind('click', function() {
       $('.files-tree .children > .item').removeClass('selected');
       $(this).addClass('selected');
     });
 
-    // $('.files-tree .children > .item').unbind('click');
-    // $('.files-tree .children > .item').bind('click', function() {
-    //   self.app.visuFile($(this).attr('data-path'));
-    // });
+    // Open contextual menu on right-click
+    $('.files-tree .project').bind('contextmenu', function(e) {
+      self.clickedItem = $(this).parent();
+      self.projectContextMenu.popup(e.pageX, e.pageY);
+    });
+    $('.files-tree .file').bind('contextmenu', function(e) {
+      self.clickedItem = $(this);
+      self.fileContextMenu.popup(e.pageX, e.pageY);
+    });
+    $('.files-tree .directory').bind('contextmenu', function(e) {
+      self.clickedItem = $(this).parent();
+      self.folderContextMenu.popup(e.pageX, e.pageY);
+    });
 
+    // Open file on dblclick
     $('.files-tree .children > .item').unbind('dblclick');
     $('.files-tree .children > .item').bind('dblclick', function() {
       self.app.openFile($(this).attr('data-path'));
