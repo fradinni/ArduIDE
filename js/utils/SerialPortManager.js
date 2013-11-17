@@ -90,6 +90,12 @@ define([], function() {
     }
   };
 
+  SerialPortManager.prototype.println = function(value) {
+    if(this.serialPort) {
+      this.serialPort.write(value+'\n');
+    }
+  };
+
 
   return SerialPortManager;
 });

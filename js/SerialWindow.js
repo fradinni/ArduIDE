@@ -9,6 +9,15 @@ define([], function() {
   var speed = $('#baudRate').val();
   console.log('Open serial connection ', port, speed);
 
+  $('#input-text').keydown(function(e) {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      var val = $('#input-text').val();
+      app.serialPortManager.println(val);
+      $('#input-text').val('');
+    }
+  });
+
   var textarea = $('textarea');
   function onData(data) {
     textarea.append(data.toString());
